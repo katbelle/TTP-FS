@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  <h2>Transaction History</h2>
+
+  <ul>
+    {% for transaction in transactions %}
+      <li>
+        <a href="/transactions/{{ transaction.transaction_id }}">
+          {{ transaction.stock.abbr_stock_name }}
+          {{ transaction.quantity_purchased }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}

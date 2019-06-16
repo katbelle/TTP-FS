@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link href="/static/register.css" type="text/css" rel="stylesheet" >
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+</head>
+
+<body id="LoginForm">
+    <div class="container">
+    <img src="/static/imgs/Stockify_logo.png">
+        <div class="login-form">
+            <div class="main-div">
+		        <div class="panel">
+	 <p>Please enter your email and password</p>
+	            </div>
+		<form id="Login" action="/login" method="post">
+
+				<div class="form-group">
+						<input type="email" class="form-control" id="email" name="email" placeholder="Email Address">
+				</div>
+
+				<div class="form-group">
+						<input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                </div>
+
+				<button type="submit" class="btn btn-primary">Login</button>
+				
+		</form>
+
+		<div>
+			<button class="btn btn-forgot-pw"> Need to sign up for an account?</button>
+		</div>
+		    </div>
+            <p class="bottom-text"></p>
+        </div>
+    </div>
+
+
+</body>
+</html>
