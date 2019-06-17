@@ -91,11 +91,17 @@ def login():
 			return render_template("sign_in.html")
 
 
-@app.route("/purchase", methods=["POST"])
+@app.route("/purchase", methods=["GET","POST"])
 def purchase_stock():
 	""" Purchase Stock """
 	if request.method == "POST":
-		return render_template("portfolio.html")
+
+#did I do that part correctly? 
+		ticker = request.form.get("ticker_id")
+
+#is this indented wrong? 
+	return render_template("portfolio.html")
+	
 
 
 @app.route("/logout")
