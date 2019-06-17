@@ -11,6 +11,7 @@ flask-debugtoolbar = "*"
 sqlalchemy = "*"
 flask-sqlalchemy = "*"
 pandas = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.7"
