@@ -51,14 +51,13 @@ def connect_to_db(app):
 
 	# Configure to use PstgreSQL database
 	
-	app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///stockify-app'
+	app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://local:local@db:5432/stockify'
 	app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 	db.app = app
 	db.init_app(app)
 
 
 if __name__ == "__main__":
-	
-	from server import app
+	from app import app
 	connect_to_db(app)
 	print("Woot! Connected to DB.")

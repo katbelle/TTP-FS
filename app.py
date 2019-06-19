@@ -1,4 +1,3 @@
-#the beginnings of the IEX project
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
@@ -34,6 +33,11 @@ def index():
 @app.route("/transactions")
 def get_transactions():
 	"""Display history of user transactions"""
+
+	if not session.get("logged_in_user"):
+		flash("You must be logged in to access your Portfolio")
+		return redirect("/")
+
 	transactions = Transaction.query.distinct(Transaction.stock_id).all()
 	return render_template("transactions.html",
 						   state=get_state(session))
@@ -57,10 +61,9 @@ def register_process():
 
 	if User.query.filter(User.email == email).first():
 		flash('An account with that email already exists!')
-		#import pdb; pdb.set_trace()
+		
 		return render_template("register.html")
 
-	#good place to add password encryption because this
 	#checks that the account doesn't already exist.
 	user = User(email=email, password=password)
 	db.session.add(user)
@@ -69,7 +72,6 @@ def register_process():
 	session["logged_in_user"] = user.user_id
 
 	flash('Success! You made an account')
-    #later when I think routes can customize line below for specific redirect
 	return redirect("/")
 
 
@@ -89,7 +91,7 @@ def login():
 			flash("Logged in!")
 			return redirect("/")
 		else:
-			flash("The e-mail or password is incorrect.")
+			flash("The e-mail or password entered was incorrect.")
 			return render_template("sign_in.html")
 
 
@@ -99,6 +101,7 @@ def purchase_stock():
 	if request.method == "POST":
 		ticker_id = request.form.get("ticker_id")
 		quantity = request.form.get("quantity")
+		#just for now until I set-up database & can have users
 		user = None
 		iex = IEX(user)
 		iex.purchase_stocks(ticker_id, quantity)
