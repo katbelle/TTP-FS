@@ -22,6 +22,8 @@ def get_state(session):
 		'loggedIn': bool(session.get('logged_in_user')),
 	}
 
+def get_user(session):
+	return User.query.get(session['logged_in_user'])
 
 @app.route('/')
 def index():
@@ -61,7 +63,7 @@ def register_process():
 
 	if User.query.filter(User.email == email).first():
 		flash('An account with that email already exists!')
-		
+
 		return render_template("register.html")
 
 	#checks that the account doesn't already exist.
@@ -101,14 +103,16 @@ def purchase_stock():
 	if request.method == "POST":
 		ticker_id = request.form.get("ticker_id")
 		quantity = request.form.get("quantity")
-		#just for now until I set-up database & can have users
-		user = None
-		iex = IEX(user)
-		iex.purchase_stocks(ticker_id, quantity)
 
+		# @TODO: Check that user has enough cash money for transaction.
+		user = get_user(session)
+
+		iex = IEX(user)
+		transaction = iex.purchase_stocks(ticker_id, quantity)
+		# @TODO: flash confirmation with transaction details.
 
 	return render_template("portfolio.html")
-	
+
 
 
 @app.route("/logout")
@@ -124,7 +128,7 @@ def logout():
 if __name__ == "__main__":
 
 	app.debug = True
-	
+
 	app.jinja_env.auto_reload = app.debug
 
 	connect_to_db(app)

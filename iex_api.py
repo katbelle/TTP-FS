@@ -3,9 +3,9 @@
 #https://api.iextrading.com/1.0/ref-data/symbols
 
 #using IEX cloud API
-from iexfinance.refdata import get_symbols
 from iexfinance.stocks import Stock
 
+from model import db, Transaction
 
 class IEX:
 	def __init__(self, user):
@@ -15,10 +15,23 @@ class IEX:
 		return Stock(ticker_id)
 
 	def purchase_stocks(self, ticker_id, quantity):
+		"""Purchase stocks and return a transaction."""
 		stock = self.get_stock(ticker_id)
-		print(stock.get_price())
-		cost = stock.get_price() * int(quantity) * 100
+		price = stock.get_price() * 100
+		print(price)
+		cost = price * int(quantity)
 		print(cost)
+		transaction = Transaction(
+			cost=cost,
+			quantity=quantity,
+			stock_price=price,
+			ticker_id=ticker_id,
+			type='buy',
+			user=self.user
+		)
+		db.session.add(transaction)
+		db.session.commit()
+		return transaction
 
 
 

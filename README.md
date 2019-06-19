@@ -1,13 +1,13 @@
 # Install
 
+### 1. Use Docker
 
-### Use Docker
 Make sure its installed first
 
 `docker-compose up`
 
-### Migrate Database
+### 2. Migrate Database
+
 To migrate database
 
-`docker-compose exec web pipenv run python migrate.py`
-
+`docker-compose exec web python migrate.py`

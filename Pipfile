@@ -4,13 +4,12 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+flask-debugtoolbar = "*"
 
 [packages]
 flask = "*"
-flask-debugtoolbar = "*"
 sqlalchemy = "*"
 flask-sqlalchemy = "*"
-pandas = "*"
 python-dotenv = "*"
 iexfinance = "*"
 psycopg2 = "*"
