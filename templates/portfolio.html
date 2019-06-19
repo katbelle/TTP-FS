@@ -4,12 +4,17 @@
 
 <div class="portfolio-container">
     <div class="left-split">
-        <h1> Portfolio </h1>
-        <script>
-            
-        </script>
+        <h1> Portfolio ${{ '%.2f' % (total_portfolio_cost / 100) }}</h1>
+        <ul>
+            {% for ticker_id, stock in portfolio.items() %}
+                <li class='line-item {}'>
+                    {{ ticker_id.upper() }} - {{ stock['quantity'] }} Shares: ${{ '%.2f' % (stock['cost'] / 100) }}
+                </li>
+            {% endfor %}
+        </ul>
     </div>
     <div class="right-split">
+        <h1>Cash ${{ '%.2f' % (user_cash_money / 100) }}</h1>
         <form id="Purchase" class="purchase-form" action="/purchase" method="post">
 
             <div class="form-group">
@@ -26,6 +31,6 @@
     </div>
 </div>
 {% endblock %}
-        
+
 
 

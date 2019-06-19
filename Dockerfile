@@ -4,6 +4,6 @@ WORKDIR /app
 # Necessary for psycopg2
 RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
 RUN pip install pipenv
-RUN pipenv install --dev --system --verbose
+RUN pipenv install --dev --verbose
 
-CMD flask run --host=0.0.0.0
+CMD pipenv run flask run --host=0.0.0.0

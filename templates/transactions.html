@@ -5,11 +5,8 @@
 
   <ul>
     {% for transaction in transactions %}
-      <li>
-        <a href="/transactions/{{ transaction.transaction_id }}">
-          {{ transaction.stock.abbr_stock_name }}
-          {{ transaction.quantity_purchased }}
-        </a>
+      <li class='line-item'>
+        {{transaction.type.upper()}} ({{ transaction.ticker_id.upper() }}) {{ transaction.quantity }} @ ${{ "%.2f" % (transaction.stock_price / 100) }}
       </li>
     {% endfor %}
   </ul>

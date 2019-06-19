@@ -10,4 +10,4 @@ Make sure its installed first
 
 To migrate database
 
-`docker-compose exec web python migrate.py`
+`docker-compose exec web pipenv run python migrate.py`

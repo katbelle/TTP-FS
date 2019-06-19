@@ -1,6 +1,3 @@
-from dotenv import load_dotenv, find_dotenv
-load_dotenv(find_dotenv())
-
 import os
 import json
 from flask import Flask, render_template, redirect, request, flash, session
@@ -22,27 +19,16 @@ def get_state(session):
 		'loggedIn': bool(session.get('logged_in_user')),
 	}
 
+
 def get_user(session):
 	return User.query.get(session['logged_in_user'])
+
 
 @app.route('/')
 def index():
 	"""Login/Landing Page"""
-	#must do the following steps for each route to export var logged_in
 	return render_template("sign_in.html")
 
-
-@app.route("/transactions")
-def get_transactions():
-	"""Display history of user transactions"""
-
-	if not session.get("logged_in_user"):
-		flash("You must be logged in to access your Portfolio")
-		return redirect("/")
-
-	transactions = Transaction.query.distinct(Transaction.stock_id).all()
-	return render_template("transactions.html",
-						   state=get_state(session))
 
 #Build out an about me page if theres time
 # @app.route('/about')
@@ -53,17 +39,15 @@ def get_transactions():
 
 @app.route("/sign-up", methods=["GET", "POST"])
 def register_process():
-	"""Registration form and process"""
+	"""Registration form and process."""
 	if request.method == "GET":
 		return render_template("register.html")
-
 
 	email = request.form.get("email")
 	password = request.form.get("password")
 
 	if User.query.filter(User.email == email).first():
 		flash('An account with that email already exists!')
-
 		return render_template("register.html")
 
 	#checks that the account doesn't already exist.
@@ -82,7 +66,6 @@ def login():
 	"""Log in."""
 	if request.method == "GET":
 		return render_template("sign_in.html")
-
 	else:
 		email = request.form.get("email")
 		password = request.form.get("password")
@@ -97,22 +80,47 @@ def login():
 			return render_template("sign_in.html")
 
 
-@app.route("/purchase", methods=["GET","POST"])
+@app.route("/purchase", methods=["GET", "POST"])
 def purchase_stock():
-	""" Purchase Stock """
+	"""Purchase Stock."""
+	if not session.get("logged_in_user"):
+		flash("You must be logged in to access your Portfolio")
+		return redirect("/")
+
+	user = get_user(session)
+
 	if request.method == "POST":
 		ticker_id = request.form.get("ticker_id")
 		quantity = request.form.get("quantity")
-
-		# @TODO: Check that user has enough cash money for transaction.
-		user = get_user(session)
-
 		iex = IEX(user)
-		transaction = iex.purchase_stocks(ticker_id, quantity)
-		# @TODO: flash confirmation with transaction details.
+		success, transaction = iex.purchase_stocks(ticker_id, quantity)
+		if not success:
+			flash(transaction)
+		else:
+			flash('purchase successful')
 
-	return render_template("portfolio.html")
+	# @TODO: Get portfolio data from transactions to display on page.
+	portfolio = iex.get_portfolio()
+	total_portfolio_cost = sum(
+		[stock['cost'] for stock in portfolio.values()]
+	)
+	return render_template("portfolio.html", portfolio=portfolio,
+						   total_portfolio_cost=total_portfolio_cost,
+						   user_cash_money=user.cash_money)
 
+
+@app.route("/transactions", methods=["GET"])
+def transactions():
+	"""Display history of user transactions"""
+	if not session.get("logged_in_user"):
+		flash("You must be logged in to access your Portfolio")
+		return redirect("/")
+
+	user = get_user(session)
+	transactions = Transaction.query.filter(user=user).all()
+	return render_template("transactions.html",
+						   state=get_state(session),
+						   transactions=transactions)
 
 
 @app.route("/logout")
@@ -122,7 +130,6 @@ def logout():
 	del session["logged_in_user"]
 	flash("you're logged out")
 	return redirect("/")
-
 
 
 if __name__ == "__main__":

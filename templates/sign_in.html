@@ -1,40 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-
     <link href="/static/style.css" type="text/css" rel="stylesheet" >
-   
-
 </head>
 
 <body id="LoginForm">
     <div class="container">
-	<img src="/static/imgs/Stockify_logo.png">
+		<img src="/static/imgs/Stockify_logo.png"></img>
         <div class="login-form">
             <div class="main-div">
 		        <div class="panel">
-	 <p>Please enter your email and password</p>
+	 				<p>Please enter your email and password</p>
 				</div>
-		<div class="login-form">
-		<form id="Login" action="/login" method="post">
-
-				<div class="form-group">
-						<input type="email" class="form-control" id="email" name="email" placeholder="Email Address">
+				<div class="login-form">
+					<form id="Login" action="/login" method="post">
+						<div class="form-group">
+							<input type="email" class="form-control" id="email" name="email" placeholder="Email Address">
+						</div>
+						<div class="form-group">
+							<input type="password" class="form-control" id="password" name="password" placeholder="Password">
+						</div>
+						<button type="submit" class="btn btn-primary">Login</button>
+						<button class="btn btn-forgot-pw"> Need to sign up for an account?</button>
+					</form>
 				</div>
-
-				<div class="form-group">
-						<input type="password" class="form-control" id="password" name="password" placeholder="Password">
-                </div>
-
-				<button type="submit" class="btn btn-primary">Login</button>
-				<button class="btn btn-forgot-pw"> Need to sign up for an account?</button>
-		</form>
-		</div>
-
 		    </div>
             <p class="bottom-text"></p>
         </div>
     </div>
-
 </body>
 </html>
