@@ -7,11 +7,13 @@ from pprint import pformat
 from sqlalchemy.sql import func, exists
 
 from iex_api import IEX
-from model import User, connect_to_db, db
+from model import User, Transaction, connect_to_db, db
 
 app = Flask(__name__)
 app.secret_key = "Stockify"
 app.jinja_env.undefined = StrictUndefined
+connect_to_db(app)
+
 
 
 def get_state(session):
@@ -27,7 +29,10 @@ def get_user(session):
 @app.route('/')
 def index():
 	"""Login/Landing Page"""
-	return render_template("sign_in.html")
+	if session.get("logged_in_user"):
+		return redirect("/portfolio")
+	else:
+		return redirect("/login")
 
 
 #Build out an about me page if theres time
@@ -80,7 +85,7 @@ def login():
 			return render_template("sign_in.html")
 
 
-@app.route("/purchase", methods=["GET", "POST"])
+@app.route("/portfolio", methods=["GET", "POST"])
 def purchase_stock():
 	"""Purchase Stock."""
 	if not session.get("logged_in_user"):
@@ -88,16 +93,16 @@ def purchase_stock():
 		return redirect("/")
 
 	user = get_user(session)
+	iex = IEX(user)
 
 	if request.method == "POST":
 		ticker_id = request.form.get("ticker_id")
 		quantity = request.form.get("quantity")
-		iex = IEX(user)
-		success, transaction = iex.purchase_stocks(ticker_id, quantity)
-		if not success:
-			flash(transaction)
+		transaction, error = iex.purchase_stocks(ticker_id, quantity)
+		if error:
+			flash(error)
 		else:
-			flash('purchase successful')
+			flash('Purchase successful')
 
 	# @TODO: Get portfolio data from transactions to display on page.
 	portfolio = iex.get_portfolio()
@@ -117,7 +122,7 @@ def transactions():
 		return redirect("/")
 
 	user = get_user(session)
-	transactions = Transaction.query.filter(user=user).all()
+	transactions = Transaction.query.filter(Transaction.user == user).all()
 	return render_template("transactions.html",
 						   state=get_state(session),
 						   transactions=transactions)
@@ -137,8 +142,6 @@ if __name__ == "__main__":
 	app.debug = True
 
 	app.jinja_env.auto_reload = app.debug
-
-	connect_to_db(app)
 
 	# Use the DebugToolbar
 	DebugToolbarExtension(app)

@@ -1,4 +1,5 @@
 from iexfinance.stocks import Stock
+from iexfinance.utils.exceptions import IEXSymbolError
 
 from model import db, Transaction
 
@@ -7,7 +8,8 @@ class IEX:
 		self.user = user
 
 	def get_stock(self, ticker_id):
-		return Stock(ticker_id)
+		stock = Stock(ticker_id)
+		return stock
 
 	def purchase_stocks(self, ticker_id, quantity):
 		"""Purchase stocks and return a transaction."""
@@ -16,7 +18,7 @@ class IEX:
 		cost = price * int(quantity)
 
 		if self.user.cash_money - cost < 0:
-			return False, 'You do not have enough money.'
+			return None, 'You do not have enough money.'
 
 		self.user.cash_money = self.user.cash_money - cost
 		db.session.add(self.user)
@@ -31,11 +33,12 @@ class IEX:
 		)
 		db.session.add(transaction)
 		db.session.commit()
-		return True, transaction
+		return transaction, None
 
 	def get_portfolio(self):
 		""" Returns portfolio as nested dictionary """
-		for t in Transaction.query.filter(user=user).all():
+		portfolio = {}
+		for t in Transaction.query.filter(Transaction.user == self.user).all():
 			# Initialize with empty dictionary for ticker_id.
 			if t.ticker_id not in portfolio:
 				portfolio[t.ticker_id] = {
