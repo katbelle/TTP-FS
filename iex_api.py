@@ -9,11 +9,21 @@ class IEX:
 
 	def get_stock(self, ticker_id):
 		stock = Stock(ticker_id)
-		return stock
+		# pick up here, not sure if I did the 3 lines underneath correctly. 
+		try:
+			price = stock.get_price()
+			_LOGGER.debug("bleeeeeep %s", stock)
+		except IEXSymbolError as error:
+			_LOGGER.error("unknown symbol'%s'", self._stock)
+		
+		# return stock, None
+
+		
 
 	def purchase_stocks(self, ticker_id, quantity):
 		"""Purchase stocks and return a transaction."""
-		stock = self.get_stock(ticker_id)
+		
+		stock, error = self.get_stock(ticker_id)
 		price = stock.get_price() * 100
 		cost = price * int(quantity)
 
@@ -22,7 +32,7 @@ class IEX:
 
 		self.user.cash_money = self.user.cash_money - cost
 		db.session.add(self.user)
-
+	
 		transaction = Transaction(
 			cost=cost,
 			quantity=quantity,
@@ -34,6 +44,7 @@ class IEX:
 		db.session.add(transaction)
 		db.session.commit()
 		return transaction, None
+
 
 	def get_portfolio(self):
 		""" Returns portfolio as nested dictionary """

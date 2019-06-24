@@ -17,6 +17,7 @@ body {
 
 h1 {
   text-align: center;
+  padding-top: 30px;
 }
 
 .content {
@@ -73,8 +74,9 @@ h1 {
   /* margin-top: 32px; */
 }
 
-.container-fluid {
-  height: 40px;
+
+#main-div{
+  margin-top: 60px;
 }
 
 #signup {
@@ -184,19 +186,23 @@ input[type="submit"]:hover {
 
 
 .navbar {
-  background-color: whitesmoke;
+  background-color: white;
+  height: 20px;
 }
 
 .navbar-nav {
   text-align: right;
-  bottom: 0;
+}
+
+.navbar-header {
+  
 }
 
 .btn {
   margin: 25px;
   padding: 8px 15px;
   border: 2px dashed #84bd00;
-  font-family: "Pacifico", cursive;
+  font-family: "Pacifico";
   font-size: 12px;
   line-height: 1;
   color: #84bd00;
@@ -210,4 +216,17 @@ input[type="submit"]:hover {
 .btn:hover {
   color: #000;
   background-color: #84bd00;
+}
+
+.sign-up {
+  float: right;
+  margin-right: 30px;
+  margin-top: 33px;
+}
+
+.flash {
+  position: absolute;
+  bottom: 30px;
+  width: 100%;
+  padding-left: 1px;
 }

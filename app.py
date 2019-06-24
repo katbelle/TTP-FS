@@ -35,11 +35,10 @@ def index():
 		return redirect("/login")
 
 
-#Build out an about me page if theres time
-# @app.route('/about')
-# def render_about_me():
-# 	"""An about me page"""
-# 	return render_template("about.html")
+@app.route('/about')
+def render_about_me():
+	"""An about me page"""
+	return render_template("about.html")
 
 
 @app.route("/sign-up", methods=["GET", "POST"])
@@ -78,7 +77,7 @@ def login():
 		q = User.query
 		if q.filter((User.email == email), (User.password == password)).first():
 			session["logged_in_user"] = q.filter(User.email == email).one().user_id
-			flash("Logged in!")
+			# flash("Logged in!")
 			return redirect("/")
 		else:
 			flash("The e-mail or password entered was incorrect.")
@@ -133,7 +132,7 @@ def logout():
 	"""log out"""
 	print("Log out route accessed", session.get("logged_in_user"))
 	del session["logged_in_user"]
-	flash("you're logged out")
+	flash("Success! You're logged out")
 	return redirect("/")
 
 
