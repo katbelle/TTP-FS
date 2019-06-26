@@ -75,8 +75,12 @@ h1 {
 }
 
 
-#main-div{
+#main-div {
   margin-top: 60px;
+}
+
+.about-div {
+ font-family: "Open Sans Condensed", sans-serif;
 }
 
 #signup {

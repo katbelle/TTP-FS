@@ -1,9 +1,6 @@
-import os
-import json
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
-from pprint import pformat
 from sqlalchemy.sql import func, exists
 
 from iex_api import IEX
@@ -14,7 +11,6 @@ app = Flask(__name__)
 app.secret_key = "Stockify"
 app.jinja_env.undefined = StrictUndefined
 connect_to_db(app)
-
 
 
 def get_state(session):
@@ -78,7 +74,6 @@ def login():
 		q = User.query
 		if q.filter((User.email == email), (User.password == password)).first():
 			session["logged_in_user"] = q.filter(User.email == email).one().user_id
-			# flash("Logged in!")
 			return redirect("/")
 		else:
 			flash("The e-mail or password entered was incorrect.")
@@ -103,12 +98,15 @@ def purchase_stock():
 			transaction, error = iex.purchase_stocks(ticker_id, quantity)
 		except IEXAuthenticationError:
 			error = f"Invalid Ticker {ticker_id}"
+		
 		if error:
 			flash(error)
 		else:
 			flash('Purchase successful')
 
-	# @TODO: Get portfolio data from transactions to display on page.
+		#This prevents making another post resubmission when you push back btn in browser
+		return redirect(request.url)
+
 	portfolio = iex.get_portfolio()
 	total_portfolio_cost = sum(
 		[stock['cost'] for stock in portfolio.values()]
@@ -137,7 +135,7 @@ def logout():
 	"""log out"""
 	print("Log out route accessed", session.get("logged_in_user"))
 	del session["logged_in_user"]
-	flash("Success! You're logged out")
+
 	return redirect("/")
 
 
