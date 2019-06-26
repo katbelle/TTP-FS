@@ -7,6 +7,7 @@ from pprint import pformat
 from sqlalchemy.sql import func, exists
 
 from iex_api import IEX
+from iexfinance.utils.exceptions import IEXAuthenticationError
 from model import User, Transaction, connect_to_db, db
 
 app = Flask(__name__)
@@ -97,7 +98,11 @@ def purchase_stock():
 	if request.method == "POST":
 		ticker_id = request.form.get("ticker_id")
 		quantity = request.form.get("quantity")
-		transaction, error = iex.purchase_stocks(ticker_id, quantity)
+		
+		try:
+			transaction, error = iex.purchase_stocks(ticker_id, quantity)
+		except IEXAuthenticationError:
+			error = f"Invalid Ticker {ticker_id}"
 		if error:
 			flash(error)
 		else:

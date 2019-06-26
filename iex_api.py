@@ -1,5 +1,4 @@
 from iexfinance.stocks import Stock
-from iexfinance.utils.exceptions import IEXSymbolError
 
 from model import db, Transaction
 
@@ -9,21 +8,14 @@ class IEX:
 
 	def get_stock(self, ticker_id):
 		stock = Stock(ticker_id)
-		# pick up here, not sure if I did the 3 lines underneath correctly. 
-		try:
-			price = stock.get_price()
-			_LOGGER.debug("bleeeeeep %s", stock)
-		except IEXSymbolError as error:
-			_LOGGER.error("unknown symbol'%s'", self._stock)
-		
-		# return stock, None
+		return stock
 
 		
 
 	def purchase_stocks(self, ticker_id, quantity):
 		"""Purchase stocks and return a transaction."""
 		
-		stock, error = self.get_stock(ticker_id)
+		stock = self.get_stock(ticker_id)
 		price = stock.get_price() * 100
 		cost = price * int(quantity)
 
